@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learning Renaissance Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 280px 1fr 320px;
+            grid-template-rows: 80px 1fr;
+            grid-template-areas: 
+                "header header header"
+                "nav main notes";
+            min-height: 100vh;
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 0 30px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            grid-area: header;
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            display: flex;
+            align-items: center;
+            padding: 0 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 300;
+        }
+
+        .header .subtitle {
+            margin-left: auto;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .nav {
+            grid-area: nav;
+            background: #f8f9fa;
+            border-right: 1px solid #e9ecef;
+            overflow-y: auto;
+            padding: 1rem 0;
+        }
+
+        .nav-item {
+            display: block;
+            padding: 0.8rem 1.5rem;
+            color: #495057;
+            text-decoration: none;
+            border-left: 3px solid transparent;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .nav-item:hover {
+            background: #e9ecef;
+            border-left-color: #667eea;
+            color: #2c3e50;
+        }
+
+        .nav-item.active {
+            background: #667eea;
+            color: white;
+            border-left-color: #5a67d8;
+        }
+
+        .nav-section {
+            font-weight: 600;
+            padding: 1rem 1.5rem 0.5rem;
+            color: #6c757d;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .main {
+            grid-area: main;
+            padding: 2rem;
+            overflow-y: auto;
+            background: white;
+        }
+
+        .notes {
+            grid-area: notes;
+            background: #f8f9fa;
+            border-left: 1px solid #e9ecef;
+            padding: 1rem;
+            overflow-y: auto;
+        }
+
+        .notes h3 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .notes-area {
+            width: 100%;
+            height: 300px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: inherit;
+            font-size: 0.9rem;
+            resize: vertical;
+            background: white;
+        }
+
+        .notes-meta {
+            margin-top: 1rem;
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin: 0.5rem 0;
+            transition: background 0.3s ease;
+        }
+
+        .btn:hover {
+            background: #5a67d8;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+
+        .content-section {
+            display: none;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .content-section h2 {
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid #667eea;
+            font-size: 1.8rem;
+            font-weight: 300;
+        }
+
+        .content-section h3 {
+            color: #34495e;
+            margin: 1.5rem 0 1rem;
+            font-size: 1.3rem;
+        }
+
+        .content-section h4 {
+            color: #495057;
+            margin: 1rem 0 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+            box-shadow: 0 4px 15px rgba(240, 147, 251, 0.3);
+        }
+
+        .highlight-box h4 {
+            color: white;
+            margin-top: 0;
+        }
+
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .success-box {
+            background: #e8f5e8;
+            border-left: 4px solid #4caf50;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .warning-box {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        ul, ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-tracker {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+
+        .progress-item {
+            display: flex;
+            align-items: center;
+            margin: 0.5rem 0;
+        }
+
+        .progress-checkbox {
+            margin-right: 0.5rem;
+        }
+
+        .export-import {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e9ecef;
+        }
+
+        @media (max-width: 1024px) {
+            .container {
+                grid-template-columns: 250px 1fr;
+                grid-template-areas: 
+                    "header header"
+                    "nav main";
+            }
+            
+            .notes {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+                grid-template-areas: 
+                    "header"
+                    "main";
+            }
+            
+            .nav {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>Learning Renaissance Dashboard</h1>
+            <div class="subtitle">Your Personal Learning System</div>
+        </header>
+
+        <nav class="nav">
+            <div class="nav-section">Foundation</div>
+            <a href="#" class="nav-item active" data-section="overview">Overview</a>
+            <a href="#" class="nav-item" data-section="reset">Foundation Reset</a>
+            
+            <div class="nav-section">Core Method</div>
+            <a href="#" class="nav-item" data-section="mapper">MAPPER Framework</a>
+            <a href="#" class="nav-item" data-section="memory">Memory Mastery</a>
+            
+            <div class="nav-section">Advanced</div>
+            <a href="#" class="nav-item" data-section="integration">Integration</a>
+            <a href="#" class="nav-item" data-section="troubleshooting">Troubleshooting</a>
+            
+            <div class="nav-section">Daily Practice</div>
+            <a href="#" class="nav-item" data-section="routine">Daily Routine</a>
+            <a href="#" class="nav-item" data-section="weekly">Weekly Rituals</a>
+            <a href="#" class="nav-item" data-section="advantages">Your Advantages</a>
+        </nav>
+
+        <main class="main">
+            <section id="overview" class="content-section active">
+                <h2>Welcome to Your Learning Renaissance</h2>
+                
+                <div class="highlight-box">
+                    <h4>Your Learning Journey Starts Here</h4>
+                    <p>At 56, you're not just returning to learning - you're entering a renaissance. This dashboard is your comprehensive guide to modern learning techniques, specifically designed for experienced professionals like yourself.</p>
+                </div>
+
+                <h3>What Makes This Different?</h3>
+                <p>This isn't the learning of the 1970s and 80s. We now understand the brain far better, and you have advantages your younger self never had:</p>
+                
+                <ul>
+                    <li><strong>Pattern Recognition:</strong> Decades of experience create powerful learning shortcuts</li>
+                    <li><strong>Contextual Understanding:</strong> You can connect new knowledge to vast existing networks</li>
+                    <li><strong>Focus Ability:</strong> Less distraction, more purposeful learning</li>
+                    <li><strong>Emotional Regulation:</strong> Better stress management during challenging concepts</li>
+                </ul>
+
+                <h3>How to Use This Dashboard</h3>
+                <div class="info-box">
+                    <p><strong>Navigation:</strong> Use the left sidebar to jump between sections. Each section builds on the previous ones.</p>
+                    <p><strong>Notes:</strong> The right panel is your personal notes area. Jot down insights, experiences, and adaptations as you go.</p>
+                    <p><strong>Progress:</strong> Check off completed items and track your learning journey.</p>
+                </div>
+
+                <h3>Quick Start Guide</h3>
+                <ol>
+                    <li>Begin with "Foundation Reset" to calibrate your learning environment</li>
+                    <li>Master the "MAPPER Framework" - your core learning methodology</li>
+                    <li>Implement the "Memory Mastery" techniques for retention</li>
+                    <li>Establish your "Daily Routine" for consistent progress</li>
+                    <li>Use "Troubleshooting" when you hit challenges</li>
+                </ol>
+
+                <div class="success-box">
+                    <p><strong>Remember:</strong> Learning is like engineering - it's systematic, methodical, and builds on solid foundations. You already have the mindset; now you have the modern tools.</p>
+                </div>
+            </section>
+
+            <section id="reset" class="content-section">
+                <h2>Phase 1: Foundation Reset</h2>
+                <p><em>Week 1-2: Setting up for success</em></p>
+
+                <h3>Mindset Calibration</h3>
+                <div class="highlight-box">
+                    <h4>The Growth Mindset Shift</h4>
+                    <p>Your brain at 56 has advantages your 20-year-old self didn't have. Embrace these strengths:</p>
+                </div>
+
+                <ul>
+                    <li><strong>Pattern Recognition:</strong> Decades of experience create powerful learning shortcuts</li>
+                    <li><strong>Contextual Understanding:</strong> You can connect new knowledge to vast existing networks</li>
+                    <li><strong>Focus Ability:</strong> Less distraction, more purposeful learning</li>
+                    <li><strong>Emotional Regulation:</strong> Better stress management during challenging concepts</li>
+                </ul>
+
+                <h3>Learning Environment Setup</h3>
+                
+                <h4>1. Physical Space</h4>
+                <ul>
+                    <li>Dedicated learning zone with good lighting</li>
+                    <li>Minimal distractions</li>
+                    <li>Comfortable seating and desk height</li>
+                    <li>All materials within reach</li>
+                </ul>
+
+                <h4>2. Digital Tools</h4>
+                <ul>
+                    <li>Note-taking app (Notion, Obsidian, or simple text editor)</li>
+                    <li>Spaced repetition software (Anki or Quizlet)</li>
+                    <li>Timer (Pomodoro technique)</li>
+                    <li>This dashboard bookmarked!</li>
+                </ul>
+
+                <h4>3. Schedule</h4>
+                <div class="info-box">
+                    <p><strong>Consistency beats intensity.</strong> Even 25-30 minutes daily is more effective than 3-hour weekend sessions.</p>
+                </div>
+
+                <div class="progress-tracker">
+                    <h4>Foundation Reset Checklist</h4>
+                    <div class="progress-item">
+                        <input type="checkbox" class="progress-checkbox" id="space-setup">
+                        <label for="space-setup">Physical learning space organized</label>
+                    </div>
+                    <div class="progress-item">
+                        <input type="checkbox" class="progress-checkbox" id="tools-installed">
+                        <label for="tools-installed">Digital tools installed and tested</label>
+                    </div>
+                    <div class="progress-item">
+                        <input type="checkbox" class="progress-checkbox" id="schedule-planned">
+                        <label for="schedule-planned">Daily learning schedule established</label>
+                    </div>
+                    <div class="progress-item">
+                        <input type="checkbox" class="progress-checkbox" id="mindset-accepted">
+                        <label for="mindset-accepted">Growth mindset principles understood</label>
+                    </div>
+                </div>
+            </section>
+
+            <section id="mapper" class="content-section">
+                <h2>Phase 2: The MAPPER Learning Framework</h2>
+
+                <div class="highlight-box">
+                    <h4>MAPPER: Your Learning Operating System</h4>
+                    <p>Think of MAPPER as the systematic approach you'd use to solve any engineering problem - methodical, testable, and scalable.</p>
+                </div>
+
+                <h3>M - Mapping New Territory</h3>
+                <h4>Pre-Learning Assessment</h4>
+                <ul>
+                    <li>What do I already know about this topic?</li>
+                    <li>How does this connect to my engineering/development/agriculture background?</li>
+                    <li>What specific outcomes do I want?</li>
+                </ul>
+
+                <h3>A - Active Encoding</h3>
+                <h4>Modern Learning Techniques:</h4>
+
+                <div class="info-box">
+                    <h4>1. The Feynman Technique 2.0</h4>
+                    <ul>
+                        <li>Learn a concept</li>
+                        <li>Explain it in simple terms (as if teaching a 12-year-old)</li>
+                        <li>Identify gaps and revisit</li>
+                        <li>Use analogies from your professional experience</li>
+                    </ul>
+                </div>
+
+                <div class="success-box">
+                    <h4>2. Dual Coding Theory Application</h4>
+                    <ul>
+                        <li><strong>Visual:</strong> Create diagrams, mind maps, flowcharts</li>
+                        <li><strong>Verbal:</strong> Summarize in your own words, discuss aloud</li>
+                        <li><strong>Kinesthetic:</strong> Build, sketch, or physically manipulate when possible</li>
+                    </ul>
+                </div>
+
+                <div class="warning-box">
+                    <h4>3. Elaborative Interrogation</h4>
+                    <ul>
+                        <li>Ask "Why is this true?"</li>
+                        <li>"How does this relate to what I know?"</li>
+                        <li>"When would I use this?"</li>
+                    </ul>
+                </div>
+
+                <h3>P - Progressive Chunking</h3>
+                <h4>Breaking Down Complex Information:</h4>
+                <ul>
+                    <li>Start with the big picture (your engineering mind appreciates systems thinking)</li>
+                    <li>Break into logical sub-components</li>
+                    <li>Master each chunk before combining</li>
+                    <li>Build complexity gradually</li>
+                </ul>
+
+                <h3>P - Practice & Application</h3>
+                <h4>Immediate Implementation:</h4>
+                <ul>
+                    <li>Apply new knowledge within 24 hours</li>
+                    <li>Create something tangible (code, diagram, written summary)</li>
+                    <li>Teach or explain to someone else</li>
+                    <li>Connect to real-world problems you face</li>
+                </ul>
+
+                <h3>E - Evaluation & Adjustment</h3>
+                <h4>Continuous Improvement:</h4>
+                <ul>
+                    <li>Weekly review: What stuck? What didn't?</li>
+                    <li>Adjust methods based on results</li>
+                    <li>Celebrate small wins</li>
+                </ul>
+
+                <h3>R - Retrieval & Reinforcement</h3>
+                <p>See the Memory Mastery section for detailed techniques.</p>
+            </section>
+
+            <section id="memory" class="content-section">
+                <h2>Phase 3: Memory Mastery System</h2>
+
+                <h3>Short-Term Memory Optimization</h3>
+                <h4>Working Memory Enhancement:</h4>
+                <ol>
+                    <li><strong>Chunking Strategy:</strong> Group information in 3-5 item clusters</li>
+                    <li><strong>Rehearsal Loops:</strong> Repeat key concepts every 15-20 minutes during study</li>
+                    <li><strong>Visualization:</strong> Convert abstract concepts into mental images</li>
+                    <li><strong>Acronyms & Mnemonics:</strong> Create memorable abbreviations</li>
+                </ol>
+
+                <h3>Long-Term Memory Architecture</h3>
+                
+                <div class="highlight-box">
+                    <h4>The Spacing Effect Protocol</h4>
+                    <p>This is the most scientifically proven method for long-term retention:</p>
+                    <ul>
+                        <li><strong>Day 1:</strong> Initial learning</li>
+                        <li><strong>Day 3:</strong> First review (quick recall test)</li>
+                        <li><strong>Day 7:</strong> Second review</li>
+                        <li><strong>Day 21:</strong> Third review</li>
+                        <li><strong>Day 60:</strong> Fourth review</li>
+                        <li><strong>Day 180:</strong> Final consolidation review</li>
+                    </ul>
+                </div>
+
+                <h4>Memory Palace Technique:</h4>
+                <ul>
+                    <li>Use familiar locations (your home, workplace)</li>
+                    <li>Associate new concepts with specific rooms/areas</li>
+                    <li>Create vivid, unusual mental images</li>
+                    <li>Walk through your palace regularly</li>
+                </ul>
+
+                <h3>Retrieval Practice Methods</h3>
+                <div class="info-box">
+                    <p><strong>Testing for Learning</strong> (not just assessment):</p>
+                </div>
+
+                <h4>1. Active Recall Sessions</h4>
+                <ul>
+                    <li>Close your notes, write what you remember</li>
+                    <li>Use flashcards (digital spaced repetition)</li>
+                    <li>Quiz yourself regularly</li>
+                </ul>
+
+                <h4>2. Interleaving Practice</h4>
+                <ul>
+                    <li>Mix different topics in single study sessions</li>
+                    <li>Alternate between related concepts</li>
+                    <li>Compare and contrast similar ideas</li>
+                </ul>
+
+                <h4>3. Generation Effect</h4>
+                <ul>
+                    <li>Create your own examples</li>
+                    <li>Develop personal analogies</li>
+                    <li>Write summaries from memory</li>
+                </ul>
+            </section>
+
+            <section id="integration" class="content-section">
+                <h2>Phase 4: Advanced Integration Techniques</h2>
+
+                <h3>The Professional Connection Method</h3>
+                <div class="highlight-box">
+                    <h4>Leveraging Your Experience:</h4>
+                    <ul>
+                        <li><strong>Engineering Mindset:</strong> Treat learning like solving a technical problem</li>
+                        <li><strong>Systems Thinking:</strong> How does this new knowledge fit into larger frameworks?</li>
+                        <li><strong>Quality Assurance:</strong> Regular testing and validation of understanding</li>
+                        <li><strong>Documentation:</strong> Maintain learning logs like technical documentation</li>
+                    </ul>
+                </div>
+
+                <h3>Metacognitive Strategies</h3>
+                <h4>Learning How to Learn:</h4>
+                <ol>
+                    <li><strong>Planning:</strong> Set specific, measurable learning goals</li>
+                    <li><strong>Monitoring:</strong> Track progress and comprehension in real-time</li>
+                    <li><strong>Evaluating:</strong> Regular assessment of strategies and outcomes</li>
+                </ol>
+
+                <h3>Social Learning Integration</h3>
+                <ul>
+                    <li>Join online communities related to your learning topics</li>
+                    <li>Find study partners or learning groups</li>
+                    <li>Teach others what you're learning</li>
+                    <li>Seek feedback and discussion</li>
+                </ul>
+            </section>
+
+            <section id="troubleshooting" class="content-section">
+                <h2>Phase 5: Troubleshooting Common Challenges</h2>
+
+                <h3>When Information Won't Stick</h3>
+                <div class="warning-box">
+                    <ul>
+                        <li><strong>Overlearning:</strong> Practice 50% beyond initial mastery</li>
+                        <li><strong>Context Variation:</strong> Study in different environments</li>
+                        <li><strong>Emotional Connection:</strong> Find personal relevance in the material</li>
+                        <li><strong>Sleep Optimization:</strong> Ensure 7-8 hours for memory consolidation</li>
+                    </ul>
+                </div>
+
+                <h3>When Motivation Wavers</h3>
+                <div class="info-box">
+                    <ul>
+                        <li><strong>Micro-Learning:</strong> 10-15 minute sessions when energy is low</li>
+                        <li><strong>Progress Tracking:</strong> Visual progress indicators</li>
+                        <li><strong>Intrinsic Motivation:</strong> Connect learning to personal goals and values</li>
+                        <li><strong>Habit Stacking:</strong> Attach learning to existing routines</li>
+                    </ul>
+                </div>
+
+                <h3>When Technology Feels Overwhelming</h3>
+                <div class="success-box">
+                    <ul>
+                        <li>Start with one digital tool at a time</li>
+                        <li>Focus on proven, simple applications</li>
+                        <li>Combine with traditional methods (handwritten notes still work!)</li>
+                        <li>Seek help from younger colleagues or family members</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="routine" class="content-section">
+                <h2>Daily Learning Routine Template</h2>
+
+                <h3>Morning (15-20 minutes)</h3>
+                <ul>
+                    <li>Review previous day's key concepts (active recall)</li>
+                    <li>Preview today's new material (priming)</li>
+                </ul>
+
+                <h3>Focused Learning Session (25-45 minutes)</h3>
+                <ul>
+                    <li>New concept introduction</li>
+                    <li>Active processing using MAPPER framework</li>
+                    <li>Immediate application/practice</li>
+                </ul>
+
+                <h3>Evening (10-15 minutes)</h3>
+                <ul>
+                    <li>Reflection and summarization</li>
+                    <li>Schedule next review session</li>
+                    <li>Connect to existing knowledge</li>
+                </ul>
+
+                <div class="progress-tracker">
+                    <h4>Today's Learning Progress</h4>
+                    <div class="progress-item">
+                        <input type="checkbox" class="progress-checkbox" id="morning-review">
+                        <label for="morning-review">Morning review completed</label>
+                    </div>
+                    <div class="progress-item">
+                        <input type="checkbox" class="progress-checkbox" id="focused-session">
+                        <label for="focused-session">Focused learning session completed</label>
+                    </div>
+                    <div class="progress-item">
+                        <input type="checkbox" class="progress-checkbox" id="evening-reflection">
+                        <label for="evening-reflection">Evening reflection completed</label>
+                    </div>
+                </div>
+            </section>
+
+            <section id="weekly" class="content-section">
+                <h2>Weekly Learning Rituals</h2>
+
+                <h3>Monday: Planning Week</h3>
+                <ul>
+                    <li>Set learning objectives</li>
+                    <li>Organize materials and resources</li>
+                    <li>Review and adjust study schedule</li>
+                </ul>
+
+                <h3>Wednesday: Mid-Week Check</h3>
+                <ul>
+                    <li>Assess progress against goals</li>
+                    <li>Adjust strategies if needed</li>
+                    <li>Practice retrieval of week's concepts</li>
+                </ul>
+
+                <h3>Friday: Consolidation Day</h3>
+                <ul>
+                    <li>Review entire week's learning</li>
+                    <li>Create connections between concepts</li>
+                    <li>Plan weekend application activities</li>
+                </ul>
+
+                <h3>Sunday: Reflection & Preparation</h3>
+                <ul>
+                    <li>Evaluate week's learning effectiveness</li>
+                    <li>Plan improvements for next week</li>
+                    <li>Celebrate achievements</li>
+                </ul>
+            </section>
+
+            <section id="advantages" class="content-section">
+                <h2>Remember: The Renaissance Learner's Advantages</h2>
+
+                <div class="highlight-box">
+                    <h4>At 56, you bring unique strengths to learning:</h4>
+                    <ul>
+                        <li><strong>Wisdom:</strong> You can distinguish important from trivial</li>
+                        <li><strong>Patience:</strong> You understand that mastery takes time</li>
+                        <li><strong>Purpose:</strong> You learn with clear intentions and goals</li>
+                        <li><strong>Resources:</strong> You have tools and means your younger self didn't</li>
+                        <li><strong>Perspective:</strong> You can see how knowledge fits into life's bigger picture</li>
+                    </ul>
+                </div>
+
+                <p>Your engineering background is a tremendous asset - you already think systematically, solve problems methodically, and understand that complex systems are built from simple, reliable components. Apply that same mindset to learning, and you'll be amazed at what you can achieve.</p>
+
+                <div class="success-box">
+                    <h4>Welcome back to being a student.</h4>
+                    <p>The best part? This time, you get to choose exactly what fascinates you.</p>
+                </div>
+
+                <h3>Your Learning Journey Starts Now</h3>
+                <p>You have everything you need. The framework is proven, the tools are ready, and your mind is prepared. What will you learn first?</p>
+            </section>
+        </main>
+
+        <aside class="notes">
+            <h3>My Learning Notes</h3>
+            <textarea class="notes-area" id="notes-content" placeholder="Jot down your insights, experiences, and adaptations as you work through each section...
+
+Example notes:
+- Today I tried the Feynman Technique on JavaScript closures
+- Memory palace: Used my workshop layout for circuit concepts
+- Need to review spacing intervals - day 3 review was too easy
+- Connected new Python concept to my PLC programming experience"></textarea>
+            
+            <div class="notes-meta">
+                <p><strong>Note:</strong> Your notes are stored temporarily during this session. For permanent storage, copy them to a text file or use the export function below.</p>
+            </div>
+
+            <div class="progress-tracker">
+                <h4>Weekly Goals</h4>
+                <div class="progress-item">
+                    <input type="checkbox" class="progress-checkbox" id="goal1">
+                    <label for="goal1">Complete Phase 1 setup</label>
+                </div>
+                <div class="progress-item">
+                    <input type="checkbox" class="progress-checkbox" id="goal2">
+                    <label for="goal2">Practice MAPPER on chosen topic</label>
+                </div>
+                <div class="progress-item">
+                    <input type="checkbox" class="progress-checkbox" id="goal3">
+                    <label for="goal3">Establish daily routine</label>
+                </div>
+            </div>
+
+            <div class="export-import">
+                <button class="btn btn-secondary" onclick="exportNotes()">Export Notes</button>
+                <button class="btn btn-secondary" onclick="importNotes()">Import Notes</button>
+                <input type="file" id="file-input" style="display: none;" accept=".txt" onchange="loadFile(event)">
+            </div>
+        </aside>
+    </div>
+
+    <script>
+        // Store notes and progress in memory for this session
+        let sessionData = {
+            notes: '',
+            checkboxes: {}
+        };
+
+        // Navigation functionality
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Remove active class from all nav items and sections
+                document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+                document.querySelectorAll('.content-section').forEach(section => section.classList.remove('active'));
+                
+                // Add active class to clicked nav item
+                this.classList.add('active');
+                
+                // Show corresponding section
+                const sectionId = this.getAttribute('data-section');
+                document.getElementById(sectionId).classList.add('active');
+                
+                // Update notes placeholder based on section
+                updateNotesPlaceholder(sectionId);
+            });
+        });
+
+        // Notes functionality
+        const notesArea = document.getElementById('notes-content');
+        
+        // Save notes to session memory
+        notesArea.addEventListener('input', function() {
+            sessionData.notes = this.value;
+        });
+
+        // Checkbox state management
+        document.querySelectorAll('.progress-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                sessionData.checkboxes[this.id] = this.checked;
+            });
+        });
+
+        // Update notes placeholder based on current section
+        function updateNotesPlaceholder(sectionId) {
+            const placeholders = {
+                'overview': 'Initial thoughts and goals for your learning journey...',
+                'reset': 'Notes on setting up your learning environment...',
+                'mapper': 'Experiences with the MAPPER framework...',
+                'memory': 'Memory techniques that work best for you...',
+                'integration': 'How you\'re connecting new learning to your professional experience...',
+                'troubleshooting': 'Challenges faced and solutions found...',
+                'routine': 'Your daily routine adaptations and progress...',
+                'weekly': 'Weekly reflection and planning notes...',
+                'advantages': 'Personal advantages you\'ve discovered in your learning journey...'
+            };
+            
+            if (placeholders[sectionId]) {
+                notesArea.placeholder = placeholders[sectionId];
+            }
+        }
+
+        // Export notes to text file
+        function exportNotes() {
+            const data = {
+                notes: sessionData.notes,
+                checkboxes: sessionData.checkboxes,
+                exportDate: new Date().toISOString()
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'learning-renaissance-notes.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Import notes from file
+        function importNotes() {
+            document.getElementById('file-input').click();
+        }
+
+        function loadFile(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const data = JSON.parse(e.target.result);
+                        
+                        // Restore notes
+                        if (data.notes) {
+                            sessionData.notes = data.notes;
+                            notesArea.value = data.notes;
+                        }
+                        
+                        // Restore checkbox states
+                        if (data.checkboxes) {
+                            sessionData.checkboxes = data.checkboxes;
+                            Object.keys(data.checkboxes).forEach(id => {
+                                const checkbox = document.getElementById(id);
+                                if (checkbox) {
+                                    checkbox.checked = data.checkboxes[id];
+                                }
+                            });
+                        }
+                        
+                        alert('Notes and progress imported successfully!');
+                    } catch (error) {
+                        alert('Error importing file. Please ensure it\'s a valid JSON file.');
+                    }
+                };
+                reader.readAsText(file);
+            }
+        }
+
+        // Auto-scroll to active section
+        function scrollToActiveSection() {
+            const activeSection = document.querySelector('.content-section.active');
+            if (activeSection) {
+                activeSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            updateNotesPlaceholder('overview');
+        });
+    </script>
+</body>
+</html>
