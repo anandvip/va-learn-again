@@ -11,12 +11,17 @@
             box-sizing: border-box;
         }
 
+        html {
+            overflow-x: hidden;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
             color: #333;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
         .container {
@@ -27,12 +32,13 @@
                 "header header header"
                 "nav main notes";
             min-height: 100vh;
-            width: 100%;
+            width: 100vw;
             max-width: 1400px;
             margin: 0 auto;
             background: white;
             box-shadow: 0 0 30px rgba(0,0,0,0.1);
             position: relative;
+            overflow: hidden;
         }
 
         .header {
@@ -43,17 +49,23 @@
             align-items: center;
             padding: 0 2rem;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            width: 100%;
+            min-width: 0;
         }
 
         .header h1 {
             font-size: 1.8rem;
             font-weight: 300;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .header .subtitle {
             margin-left: auto;
             font-size: 0.9rem;
             opacity: 0.8;
+            white-space: nowrap;
         }
 
         .header .help-btn {
@@ -65,6 +77,8 @@
             cursor: pointer;
             margin-left: 1rem;
             transition: background 0.3s ease;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
 
         .header .help-btn:hover {
@@ -77,6 +91,7 @@
             cursor: pointer;
             padding: 5px;
             margin-right: 1rem;
+            flex-shrink: 0;
         }
 
         .burger-line {
@@ -92,25 +107,10 @@
             background: #f8f9fa;
             border-right: 1px solid #e9ecef;
             overflow-y: auto;
+            overflow-x: hidden;
             padding: 1rem 0;
-        }
-
-        /* Mobile-specific nav behavior */
-        @media (max-width: 768px) {
-            .nav {
-                position: fixed;
-                top: 80px;
-                left: 0;
-                width: 280px;
-                height: calc(100vh - 80px);
-                z-index: 999;
-                box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-                transition: transform 0.3s ease;
-            }
-
-            .nav.mobile-hidden {
-                transform: translateX(-100%);
-            }
+            width: 100%;
+            min-width: 0;
         }
 
         .nav-item {
@@ -121,6 +121,7 @@
             border-left: 3px solid transparent;
             transition: all 0.3s ease;
             font-size: 0.9rem;
+            word-wrap: break-word;
         }
 
         .nav-item:hover {
@@ -142,13 +143,17 @@
             font-size: 0.8rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            word-wrap: break-word;
         }
 
         .main {
             grid-area: main;
             padding: 2rem;
             overflow-y: auto;
+            overflow-x: hidden;
             background: white;
+            width: 100%;
+            min-width: 0;
         }
 
         .notes {
@@ -157,8 +162,11 @@
             border-left: 1px solid #e9ecef;
             padding: 1rem;
             overflow-y: auto;
+            overflow-x: hidden;
             display: flex;
             flex-direction: column;
+            width: 100%;
+            min-width: 0;
         }
 
         .notes h3 {
@@ -168,11 +176,13 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            word-wrap: break-word;
         }
 
         .notes-container {
             flex: 1;
             overflow-y: auto;
+            overflow-x: hidden;
             margin-bottom: 1rem;
         }
 
@@ -195,6 +205,7 @@
             padding: 0.5rem 1rem;
             font-size: 0.9rem;
             font-weight: 500;
+            word-wrap: break-word;
         }
 
         .note-content {
@@ -210,6 +221,7 @@
             resize: vertical;
             width: 100%;
             font-family: inherit;
+            overflow-x: hidden;
         }
 
         .note-content:focus {
@@ -223,6 +235,7 @@
             color: #6c757d;
             border-top: 1px solid #f1f3f4;
             background: #fafbfc;
+            word-wrap: break-word;
         }
 
         .add-note-btn {
@@ -276,6 +289,9 @@
         .content-section {
             display: none;
             animation: fadeIn 0.3s ease-in;
+            width: 100%;
+            max-width: 100%;
+            overflow-x: hidden;
         }
 
         .content-section.active {
@@ -294,18 +310,21 @@
             border-bottom: 3px solid #667eea;
             font-size: 1.8rem;
             font-weight: 300;
+            word-wrap: break-word;
         }
 
         .content-section h3 {
             color: #34495e;
             margin: 1.5rem 0 1rem;
             font-size: 1.3rem;
+            word-wrap: break-word;
         }
 
         .content-section h4 {
             color: #495057;
             margin: 1rem 0 0.5rem;
             font-size: 1.1rem;
+            word-wrap: break-word;
         }
 
         .highlight-box {
@@ -315,44 +334,47 @@
             border-radius: 10px;
             margin: 1rem 0;
             box-shadow: 0 4px 15px rgba(240, 147, 251, 0.3);
+            overflow-x: hidden;
         }
 
         .highlight-box h4 {
             color: white;
             margin-top: 0;
+            word-wrap: break-word;
+        }
+
+        .info-box, .success-box, .warning-box {
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 8px 8px 0;
+            overflow-x: hidden;
+            word-wrap: break-word;
         }
 
         .info-box {
             background: #e3f2fd;
             border-left: 4px solid #2196f3;
-            padding: 1rem;
-            margin: 1rem 0;
-            border-radius: 0 8px 8px 0;
         }
 
         .success-box {
             background: #e8f5e8;
             border-left: 4px solid #4caf50;
-            padding: 1rem;
-            margin: 1rem 0;
-            border-radius: 0 8px 8px 0;
         }
 
         .warning-box {
             background: #fff3e0;
             border-left: 4px solid #ff9800;
-            padding: 1rem;
-            margin: 1rem 0;
-            border-radius: 0 8px 8px 0;
         }
 
         ul, ol {
             margin-left: 1.5rem;
             margin-bottom: 1rem;
+            overflow-x: hidden;
         }
 
         li {
             margin-bottom: 0.5rem;
+            word-wrap: break-word;
         }
 
         .progress-tracker {
@@ -361,16 +383,19 @@
             border-radius: 8px;
             padding: 1rem;
             margin-top: 1rem;
+            overflow-x: hidden;
         }
 
         .progress-item {
             display: flex;
             align-items: center;
             margin: 0.5rem 0;
+            word-wrap: break-word;
         }
 
         .progress-checkbox {
             margin-right: 0.5rem;
+            flex-shrink: 0;
         }
 
         /* Modal Styles */
@@ -400,6 +425,7 @@
             max-width: 800px;
             max-height: 90vh;
             overflow-y: auto;
+            overflow-x: hidden;
             position: relative;
             animation: modalSlideIn 0.3s ease;
         }
@@ -416,6 +442,7 @@
         .modal-header h2 {
             color: #2c3e50;
             margin: 0;
+            word-wrap: break-word;
         }
 
         .close {
@@ -425,6 +452,7 @@
             font-weight: bold;
             cursor: pointer;
             transition: color 0.3s ease;
+            flex-shrink: 0;
         }
 
         .close:hover,
@@ -443,45 +471,20 @@
             to {transform: translateY(0); opacity: 1;}
         }
 
-        /* Permission Banner */
-        .permission-banner {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            padding: 1rem;
-            z-index: 1001;
-            text-align: center;
-            transform: translateY(-100%);
-            transition: transform 0.3s ease;
+        /* Welcome Modal Specific Styles */
+        #welcome-modal .modal-content {
+            max-width: 600px;
+            width: 95%;
         }
 
-        .permission-banner.show {
-            transform: translateY(0);
+        #welcome-modal input[type="text"] {
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
 
-        .permission-banner .buttons {
-            margin-top: 1rem;
-            gap: 1rem;
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .permission-banner button {
-            background: rgba(255,255,255,0.2);
-            border: 1px solid rgba(255,255,255,0.3);
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 5px;
-            cursor: pointer;
-            margin: 0 0.5rem;
-        }
-
-        .permission-banner button:hover {
-            background: rgba(255,255,255,0.3);
+        #welcome-modal input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
 
         /* Mobile Navigation Overlay */
@@ -545,6 +548,7 @@
             transition: right 0.3s ease;
             z-index: 1002;
             overflow-y: auto;
+            overflow-x: hidden;
         }
 
         .mobile-notes-panel.show {
@@ -566,21 +570,41 @@
             color: white;
             font-size: 1.5rem;
             cursor: pointer;
+            flex-shrink: 0;
         }
 
-        /* Mobile Styles */
+        /* Responsive Design */
         @media (max-width: 1200px) {
             .container {
                 grid-template-columns: 260px 1fr 300px;
+                max-width: 100vw;
             }
         }
 
         @media (max-width: 1024px) {
             .container {
-                grid-template-columns: 250px 1fr;
+                grid-template-columns: 1fr;
                 grid-template-areas: 
-                    "header header"
-                    "nav main";
+                    "header"
+                    "main";
+                width: 100vw;
+                max-width: 100vw;
+            }
+            
+            .nav {
+                position: fixed;
+                top: 80px;
+                left: 0;
+                width: 280px;
+                height: calc(100vh - 80px);
+                z-index: 999;
+                box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+                transition: transform 0.3s ease;
+                transform: translateX(-100%);
+            }
+
+            .nav.show {
+                transform: translateX(0);
             }
             
             .notes {
@@ -590,53 +614,166 @@
             .mobile-notes-toggle {
                 display: block;
             }
+
+            .main {
+                padding: 1.5rem;
+                width: 100%;
+                max-width: 100vw;
+                overflow-x: hidden;
+            }
         }
 
         @media (max-width: 768px) {
             .container {
-                grid-template-columns: 1fr;
-                grid-template-areas: 
-                    "header"
-                    "main";
+                width: 100vw;
+                max-width: 100vw;
+                overflow-x: hidden;
             }
             
             .burger-menu {
                 display: flex;
             }
             
+            .header {
+                padding: 0 1rem;
+            }
+
+            .header h1 {
+                font-size: 1.4rem;
+            }
+            
             .header .subtitle {
                 display: none;
+            }
+
+            .main {
+                padding: 1rem;
+                width: 100%;
+                max-width: 100vw;
+                overflow-x: hidden;
+            }
+
+            .content-section h2 {
+                font-size: 1.5rem;
+            }
+
+            .content-section h3 {
+                font-size: 1.2rem;
+            }
+
+            .content-section h4 {
+                font-size: 1rem;
             }
 
             .modal-content {
                 margin: 5% auto;
                 width: 95%;
                 padding: 1.5rem;
+                max-width: calc(100vw - 2rem);
             }
         }
 
         @media (max-width: 480px) {
+            .header {
+                padding: 0 0.5rem;
+            }
+
+            .header h1 {
+                font-size: 1.2rem;
+            }
+
+            .header .help-btn {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.8rem;
+                margin-left: 0.5rem;
+            }
+
             .main {
-                padding: 1rem;
+                padding: 0.8rem;
+            }
+
+            .content-section h2 {
+                font-size: 1.3rem;
+            }
+
+            .highlight-box, .info-box, .success-box, .warning-box {
+                padding: 0.8rem;
+                margin: 0.8rem 0;
             }
 
             .modal-content {
                 margin: 2% auto;
                 padding: 1rem;
+                width: 98%;
+                max-width: calc(100vw - 1rem);
             }
+
+            .mobile-notes-panel {
+                width: 95%;
+            }
+        }
+
+        /* Ensure no horizontal overflow anywhere */
+        * {
+            max-width: 100%;
+        }
+
+        img, video, iframe, object, embed {
+            max-width: 100%;
+            height: auto;
+        }
+
+        pre, code {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
     </style>
 </head>
 <body>
-    <!-- Permission Banner -->
-    <div id="permission-banner" class="permission-banner">
-        <div>
-            <h3>📚 Learning Renaissance Dashboard</h3>
-            <p>This app wants to save your learning notes locally on your device for your convenience. <br>
-            <strong>Important:</strong> Your data will only be stored on this device and may be lost if you clear browser data, use incognito mode, or switch devices.</p>
-            <div class="buttons">
-                <button onclick="acceptLocalStorage()">✅ Allow Local Storage</button>
-                <button onclick="declineLocalStorage()">❌ Use Session Only</button>
+    <!-- Welcome & Storage Permission Modal -->
+    <div id="welcome-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🎓 Welcome to Your Learning Renaissance</h2>
+            </div>
+            
+            <div class="highlight-box">
+                <h4>Let's Personalize Your Learning Journey</h4>
+                <p>To get started, please tell us your name and choose how you'd like to store your learning progress.</p>
+            </div>
+
+            <div style="margin: 1.5rem 0;">
+                <label for="user-name" style="display: block; font-weight: 600; margin-bottom: 0.5rem;">Your Name:</label>
+                <input type="text" id="user-name" placeholder="Enter your name..." 
+                       style="width: 100%; padding: 0.8rem; border: 1px solid #ddd; border-radius: 5px; font-size: 1rem;">
+            </div>
+
+            <h3>📊 Choose Your Data Storage Method</h3>
+            
+            <div class="success-box">
+                <h4>🏆 Recommended: Persistent Mode (Local Storage)</h4>
+                <p><strong>Best for regular learners:</strong> Your notes and progress are saved permanently on this device and survive browser restarts. Perfect for building a continuous learning journey.</p>
+                <p><strong>⚠️ Important:</strong> Data remains safe unless you manually clear browser data or use incognito mode.</p>
+            </div>
+
+            <div class="warning-box">
+                <h4>⚡ Session Mode (Temporary Storage)</h4>
+                <p><strong>For temporary use:</strong> Your notes disappear when you refresh the page or close your browser. Good for shared computers or privacy-focused sessions.</p>
+                <p><strong>💡 Tip:</strong> Remember to export your notes before closing if you choose this option.</p>
+            </div>
+
+            <div class="info-box">
+                <p><strong>Pro Tip:</strong> Regardless of your choice, regularly export your notes using the "📤 Export All Notes" button as a backup. This ensures your learning progress is never lost!</p>
+            </div>
+
+            <div style="display: flex; gap: 1rem; margin-top: 2rem; flex-wrap: wrap;">
+                <button class="btn" onclick="acceptLocalStorage()" style="flex: 1; min-width: 200px;">
+                    ✅ Use Persistent Mode (Recommended)
+                </button>
+                <button class="btn btn-secondary" onclick="declineLocalStorage()" style="flex: 1; min-width: 200px;">
+                    ⚡ Use Session Mode
+                </button>
             </div>
         </div>
     </div>
@@ -743,6 +880,11 @@
         <main class="main">
             <section id="overview" class="content-section active">
                 <h2>Welcome to Your Learning Renaissance</h2>
+                
+                <div class="info-box" style="text-align: center;">
+                    <h4 class="welcome-user">Welcome to your personal learning journey!</h4>
+                    <p style="margin: 0;"><em>Your personalized learning dashboard is ready to help you master new skills.</em></p>
+                </div>
                 
                 <div class="highlight-box">
                     <h4>Your Learning Journey Starts Here</h4>
@@ -1197,7 +1339,8 @@
             checkboxes: {},
             currentSection: 'overview',
             useLocalStorage: false,
-            permissionAsked: false
+            permissionAsked: false,
+            userName: ''
         };
 
         // Section titles for display
@@ -1222,8 +1365,18 @@
             renderNotes();
             
             // Initialize mobile nav as hidden only on mobile
-            if (window.innerWidth <= 768) {
+            if (window.innerWidth <= 1024) {
                 hideMobileNav();
+            }
+
+            // Add enter key handler for name input
+            const nameInput = document.getElementById('user-name');
+            if (nameInput) {
+                nameInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        acceptLocalStorage();
+                    }
+                });
             }
         });
 
@@ -1232,57 +1385,95 @@
             const nav = document.getElementById('nav');
             const overlay = document.getElementById('mobile-nav-overlay');
             
-            if (window.innerWidth > 768) {
+            if (window.innerWidth > 1024) {
                 // On desktop, ensure nav is always visible
-                nav.classList.remove('mobile-hidden');
+                nav.classList.remove('show');
+                nav.style.transform = '';
                 overlay.classList.remove('show');
             } else {
-                // On mobile, start with nav hidden
-                nav.classList.add('mobile-hidden');
-                overlay.classList.remove('show');
+                // On mobile/tablet, start with nav hidden
+                hideMobileNav();
             }
         });
 
         // Storage permission management
         function checkStoragePermission() {
             const permission = localStorage.getItem('storagePermission');
+            const savedUserName = localStorage.getItem('learningUserName');
+            
             if (permission) {
                 appState.useLocalStorage = permission === 'true';
                 appState.permissionAsked = true;
-                hidePermissionBanner();
+                appState.userName = savedUserName || '';
+                hideWelcomeModal();
+                updateWelcomeMessage();
             } else {
-                showPermissionBanner();
+                showWelcomeModal();
             }
         }
 
-        function showPermissionBanner() {
-            document.getElementById('permission-banner').classList.add('show');
+        function showWelcomeModal() {
+            document.getElementById('welcome-modal').classList.add('show');
         }
 
-        function hidePermissionBanner() {
-            document.getElementById('permission-banner').classList.remove('show');
+        function hideWelcomeModal() {
+            document.getElementById('welcome-modal').classList.remove('show');
         }
 
         function acceptLocalStorage() {
+            const userName = document.getElementById('user-name').value.trim();
+            if (!userName) {
+                alert('Please enter your name to continue.');
+                document.getElementById('user-name').focus();
+                return;
+            }
+            
             localStorage.setItem('storagePermission', 'true');
+            localStorage.setItem('learningUserName', userName);
             appState.useLocalStorage = true;
             appState.permissionAsked = true;
-            hidePermissionBanner();
+            appState.userName = userName;
+            hideWelcomeModal();
+            updateWelcomeMessage();
             saveAppState();
         }
 
         function declineLocalStorage() {
+            const userName = document.getElementById('user-name').value.trim();
+            if (!userName) {
+                alert('Please enter your name to continue.');
+                document.getElementById('user-name').focus();
+                return;
+            }
+            
             localStorage.setItem('storagePermission', 'false');
+            localStorage.setItem('learningUserName', userName);
             appState.useLocalStorage = false;
             appState.permissionAsked = true;
-            hidePermissionBanner();
+            appState.userName = userName;
+            hideWelcomeModal();
+            updateWelcomeMessage();
+        }
+
+        function updateWelcomeMessage() {
+            if (appState.userName) {
+                const welcomeElements = document.querySelectorAll('.welcome-user');
+                welcomeElements.forEach(el => {
+                    el.textContent = `Welcome back, ${appState.userName}!`;
+                });
+            }
         }
 
         // State management
         function saveAppState() {
             if (appState.useLocalStorage) {
                 try {
-                    localStorage.setItem('learningDashboardState', JSON.stringify(appState));
+                    const stateToSave = {
+                        notes: appState.notes,
+                        checkboxes: appState.checkboxes,
+                        userName: appState.userName
+                    };
+                    localStorage.setItem('learningDashboardState', JSON.stringify(stateToSave));
                 } catch (e) {
                     console.warn('Failed to save to localStorage:', e);
                 }
@@ -1297,6 +1488,7 @@
                         const savedState = JSON.parse(saved);
                         appState.notes = savedState.notes || {};
                         appState.checkboxes = savedState.checkboxes || {};
+                        appState.userName = savedState.userName || appState.userName;
                         
                         // Restore checkbox states
                         Object.keys(appState.checkboxes).forEach(id => {
@@ -1310,6 +1502,7 @@
                     console.warn('Failed to load from localStorage:', e);
                 }
             }
+            updateWelcomeMessage();
         }
 
         // Event listeners setup
@@ -1339,8 +1532,11 @@
             // Modal close
             document.querySelector('.close').addEventListener('click', hideHelp);
             window.addEventListener('click', function(event) {
-                const modal = document.getElementById('help-modal');
-                if (event.target === modal) {
+                const helpModal = document.getElementById('help-modal');
+                const welcomeModal = document.getElementById('welcome-modal');
+                
+                // Only close help modal when clicking outside, not welcome modal (required step)
+                if (event.target === helpModal) {
                     hideHelp();
                 }
             });
@@ -1359,7 +1555,7 @@
             updateCurrentSection(sectionId);
             
             // Hide mobile nav only on mobile screens
-            if (window.innerWidth <= 768) {
+            if (window.innerWidth <= 1024) {
                 hideMobileNav();
             }
         }
@@ -1367,36 +1563,36 @@
         // Mobile navigation functions
         function toggleMobileNav() {
             // Only apply mobile nav logic on small screens
-            if (window.innerWidth <= 768) {
+            if (window.innerWidth <= 1024) {
                 const nav = document.getElementById('nav');
                 const overlay = document.getElementById('mobile-nav-overlay');
                 
-                if (nav.classList.contains('mobile-hidden')) {
-                    showMobileNav();
-                } else {
+                if (nav.classList.contains('show')) {
                     hideMobileNav();
+                } else {
+                    showMobileNav();
                 }
             }
         }
 
         function showMobileNav() {
             // Only apply on mobile screens
-            if (window.innerWidth <= 768) {
+            if (window.innerWidth <= 1024) {
                 const nav = document.getElementById('nav');
                 const overlay = document.getElementById('mobile-nav-overlay');
                 
-                nav.classList.remove('mobile-hidden');
+                nav.classList.add('show');
                 overlay.classList.add('show');
             }
         }
 
         function hideMobileNav() {
             // Only apply on mobile screens
-            if (window.innerWidth <= 768) {
+            if (window.innerWidth <= 1024) {
                 const nav = document.getElementById('nav');
                 const overlay = document.getElementById('mobile-nav-overlay');
                 
-                nav.classList.add('mobile-hidden');
+                nav.classList.remove('show');
                 overlay.classList.remove('show');
             }
         }
@@ -1545,6 +1741,7 @@
             const data = {
                 notes: appState.notes,
                 checkboxes: appState.checkboxes,
+                userName: appState.userName,
                 exportDate: new Date().toISOString(),
                 version: '1.0'
             };
@@ -1585,6 +1782,11 @@
                                 checkbox.checked = data.checkboxes[id];
                             }
                         });
+                    }
+
+                    if (data.userName && !appState.userName) {
+                        appState.userName = data.userName;
+                        updateWelcomeMessage();
                     }
                     
                     saveAppState();
