@@ -27,10 +27,12 @@
                 "header header header"
                 "nav main notes";
             min-height: 100vh;
+            width: 100%;
             max-width: 1400px;
             margin: 0 auto;
             background: white;
             box-shadow: 0 0 30px rgba(0,0,0,0.1);
+            position: relative;
         }
 
         .header {
@@ -91,11 +93,24 @@
             border-right: 1px solid #e9ecef;
             overflow-y: auto;
             padding: 1rem 0;
-            transition: transform 0.3s ease;
         }
 
-        .nav.mobile-hidden {
-            transform: translateX(-100%);
+        /* Mobile-specific nav behavior */
+        @media (max-width: 768px) {
+            .nav {
+                position: fixed;
+                top: 80px;
+                left: 0;
+                width: 280px;
+                height: calc(100vh - 80px);
+                z-index: 999;
+                box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+                transition: transform 0.3s ease;
+            }
+
+            .nav.mobile-hidden {
+                transform: translateX(-100%);
+            }
         }
 
         .nav-item {
@@ -469,7 +484,97 @@
             background: rgba(255,255,255,0.3);
         }
 
+        /* Mobile Navigation Overlay */
+        .mobile-nav-overlay {
+            display: none;
+            position: fixed;
+            top: 80px;
+            left: 0;
+            width: 100%;
+            height: calc(100vh - 80px);
+            background: rgba(0,0,0,0.5);
+            z-index: 998;
+        }
+
+        .mobile-nav-overlay.show {
+            display: block;
+        }
+
+        /* Notes Toggle for Mobile */
+        .mobile-notes-toggle {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 1rem;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+            z-index: 1000;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-notes-toggle:hover {
+            background: #5a67d8;
+            transform: scale(1.1);
+        }
+
+        .mobile-notes-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1001;
+        }
+
+        .mobile-notes-panel {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 90%;
+            max-width: 400px;
+            height: 100%;
+            background: #f8f9fa;
+            transition: right 0.3s ease;
+            z-index: 1002;
+            overflow-y: auto;
+        }
+
+        .mobile-notes-panel.show {
+            right: 0;
+        }
+
+        .mobile-notes-header {
+            background: #667eea;
+            color: white;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .mobile-notes-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
         /* Mobile Styles */
+        @media (max-width: 1200px) {
+            .container {
+                grid-template-columns: 260px 1fr 300px;
+            }
+        }
+
         @media (max-width: 1024px) {
             .container {
                 grid-template-columns: 250px 1fr;
@@ -480,6 +585,10 @@
             
             .notes {
                 display: none;
+            }
+
+            .mobile-notes-toggle {
+                display: block;
             }
         }
 
@@ -493,16 +602,6 @@
             
             .burger-menu {
                 display: flex;
-            }
-            
-            .nav {
-                position: fixed;
-                top: 80px;
-                left: 0;
-                width: 280px;
-                height: calc(100vh - 80px);
-                z-index: 999;
-                box-shadow: 2px 0 10px rgba(0,0,0,0.1);
             }
             
             .header .subtitle {
@@ -1062,6 +1161,35 @@
         </aside>
     </div>
 
+    <!-- Mobile Navigation Overlay -->
+    <div class="mobile-nav-overlay" id="mobile-nav-overlay" onclick="hideMobileNav()"></div>
+
+    <!-- Mobile Notes -->
+    <button class="mobile-notes-toggle" id="mobile-notes-toggle" onclick="showMobileNotes()">
+        📝
+    </button>
+
+    <div class="mobile-notes-overlay" id="mobile-notes-overlay" onclick="hideMobileNotes()"></div>
+    
+    <div class="mobile-notes-panel" id="mobile-notes-panel">
+        <div class="mobile-notes-header">
+            <h3>📝 Notes: <span id="mobile-section-title">Overview</span></h3>
+            <button class="mobile-notes-close" onclick="hideMobileNotes()">✖</button>
+        </div>
+        <div style="padding: 1rem;">
+            <button class="add-note-btn" onclick="addNote()">✏️ Add Note for This Section</button>
+            
+            <div class="notes-container" id="mobile-notes-container">
+                <!-- Notes will be dynamically populated here -->
+            </div>
+
+            <div class="notes-actions">
+                <button class="btn btn-secondary" onclick="exportNotes()">📤 Export All Notes</button>
+                <button class="btn btn-secondary" onclick="importNotes()">📥 Import Notes</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Application state
         let appState = {
@@ -1092,6 +1220,27 @@
             loadAppState();
             updateCurrentSection('overview');
             renderNotes();
+            
+            // Initialize mobile nav as hidden only on mobile
+            if (window.innerWidth <= 768) {
+                hideMobileNav();
+            }
+        });
+
+        // Handle window resize to ensure proper nav visibility
+        window.addEventListener('resize', function() {
+            const nav = document.getElementById('nav');
+            const overlay = document.getElementById('mobile-nav-overlay');
+            
+            if (window.innerWidth > 768) {
+                // On desktop, ensure nav is always visible
+                nav.classList.remove('mobile-hidden');
+                overlay.classList.remove('show');
+            } else {
+                // On mobile, start with nav hidden
+                nav.classList.add('mobile-hidden');
+                overlay.classList.remove('show');
+            }
         });
 
         // Storage permission management
@@ -1176,8 +1325,7 @@
 
             // Mobile menu toggle
             document.getElementById('burger-menu').addEventListener('click', function() {
-                const nav = document.getElementById('nav');
-                nav.classList.toggle('mobile-hidden');
+                toggleMobileNav();
             });
 
             // Checkbox tracking
@@ -1210,14 +1358,101 @@
             // Update current section
             updateCurrentSection(sectionId);
             
-            // Hide mobile nav
-            document.getElementById('nav').classList.add('mobile-hidden');
+            // Hide mobile nav only on mobile screens
+            if (window.innerWidth <= 768) {
+                hideMobileNav();
+            }
+        }
+
+        // Mobile navigation functions
+        function toggleMobileNav() {
+            // Only apply mobile nav logic on small screens
+            if (window.innerWidth <= 768) {
+                const nav = document.getElementById('nav');
+                const overlay = document.getElementById('mobile-nav-overlay');
+                
+                if (nav.classList.contains('mobile-hidden')) {
+                    showMobileNav();
+                } else {
+                    hideMobileNav();
+                }
+            }
+        }
+
+        function showMobileNav() {
+            // Only apply on mobile screens
+            if (window.innerWidth <= 768) {
+                const nav = document.getElementById('nav');
+                const overlay = document.getElementById('mobile-nav-overlay');
+                
+                nav.classList.remove('mobile-hidden');
+                overlay.classList.add('show');
+            }
+        }
+
+        function hideMobileNav() {
+            // Only apply on mobile screens
+            if (window.innerWidth <= 768) {
+                const nav = document.getElementById('nav');
+                const overlay = document.getElementById('mobile-nav-overlay');
+                
+                nav.classList.add('mobile-hidden');
+                overlay.classList.remove('show');
+            }
         }
 
         function updateCurrentSection(sectionId) {
             appState.currentSection = sectionId;
             document.getElementById('current-section-title').textContent = sectionTitles[sectionId] || sectionId;
+            const mobileTitle = document.getElementById('mobile-section-title');
+            if (mobileTitle) {
+                mobileTitle.textContent = sectionTitles[sectionId] || sectionId;
+            }
             renderNotes();
+        }
+
+        // Mobile notes functionality
+        function showMobileNotes() {
+            document.getElementById('mobile-notes-overlay').style.display = 'block';
+            document.getElementById('mobile-notes-panel').classList.add('show');
+            renderMobileNotes();
+        }
+
+        function hideMobileNotes() {
+            document.getElementById('mobile-notes-overlay').style.display = 'none';
+            document.getElementById('mobile-notes-panel').classList.remove('show');
+        }
+
+        function renderMobileNotes() {
+            const container = document.getElementById('mobile-notes-container');
+            const section = appState.currentSection;
+            const notes = appState.notes[section] || [];
+            
+            if (notes.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; color: #6c757d; padding: 2rem; font-style: italic;">
+                        No notes yet for this section.<br>
+                        Click "Add Note" to get started!
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = notes.map(note => `
+                <div class="note-item" data-note-id="${note.id}">
+                    <div class="note-header">
+                        ${sectionTitles[section]} Note
+                        <span onclick="deleteNote('${note.id}')" style="float: right; cursor: pointer; opacity: 0.7;">✖</span>
+                    </div>
+                    <textarea class="note-content" 
+                              onblur="updateNote('${note.id}', this.value)"
+                              placeholder="Click to write your note...">${note.content}</textarea>
+                    <div class="note-meta">
+                        Created: ${new Date(note.created).toLocaleDateString()}
+                        ${note.modified !== note.created ? `• Modified: ${new Date(note.modified).toLocaleDateString()}` : ''}
+                    </div>
+                </div>
+            `).join('');
         }
 
         // Notes management
@@ -1280,24 +1515,29 @@
                         Click "Add Note" to get started!
                     </div>
                 `;
-                return;
+            } else {
+                container.innerHTML = notes.map(note => `
+                    <div class="note-item" data-note-id="${note.id}">
+                        <div class="note-header">
+                            ${sectionTitles[section]} Note
+                            <span onclick="deleteNote('${note.id}')" style="float: right; cursor: pointer; opacity: 0.7;">✖</span>
+                        </div>
+                        <textarea class="note-content" 
+                                  onblur="updateNote('${note.id}', this.value)"
+                                  placeholder="Click to write your note...">${note.content}</textarea>
+                        <div class="note-meta">
+                            Created: ${new Date(note.created).toLocaleDateString()}
+                            ${note.modified !== note.created ? `• Modified: ${new Date(note.modified).toLocaleDateString()}` : ''}
+                        </div>
+                    </div>
+                `).join('');
             }
             
-            container.innerHTML = notes.map(note => `
-                <div class="note-item" data-note-id="${note.id}">
-                    <div class="note-header">
-                        ${sectionTitles[section]} Note
-                        <span onclick="deleteNote('${note.id}')" style="float: right; cursor: pointer; opacity: 0.7;">✖</span>
-                    </div>
-                    <textarea class="note-content" 
-                              onblur="updateNote('${note.id}', this.value)"
-                              placeholder="Click to write your note...">${note.content}</textarea>
-                    <div class="note-meta">
-                        Created: ${new Date(note.created).toLocaleDateString()}
-                        ${note.modified !== note.created ? `• Modified: ${new Date(note.modified).toLocaleDateString()}` : ''}
-                    </div>
-                </div>
-            `).join('');
+            // Also update mobile notes if they exist
+            const mobileContainer = document.getElementById('mobile-notes-container');
+            if (mobileContainer) {
+                renderMobileNotes();
+            }
         }
 
         // Export/Import functionality
