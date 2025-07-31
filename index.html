@@ -54,12 +54,48 @@
             opacity: 0.8;
         }
 
+        .header .help-btn {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 1rem;
+            transition: background 0.3s ease;
+        }
+
+        .header .help-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .burger-menu {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            padding: 5px;
+            margin-right: 1rem;
+        }
+
+        .burger-line {
+            width: 25px;
+            height: 3px;
+            background: white;
+            margin: 3px 0;
+            transition: 0.3s;
+        }
+
         .nav {
             grid-area: nav;
             background: #f8f9fa;
             border-right: 1px solid #e9ecef;
             overflow-y: auto;
             padding: 1rem 0;
+            transition: transform 0.3s ease;
+        }
+
+        .nav.mobile-hidden {
+            transform: translateX(-100%);
         }
 
         .nav-item {
@@ -106,30 +142,95 @@
             border-left: 1px solid #e9ecef;
             padding: 1rem;
             overflow-y: auto;
+            display: flex;
+            flex-direction: column;
         }
 
         .notes h3 {
             color: #2c3e50;
             margin-bottom: 1rem;
             font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
-        .notes-area {
-            width: 100%;
-            height: 300px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 1rem;
-            font-family: inherit;
-            font-size: 0.9rem;
-            resize: vertical;
+        .notes-container {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 1rem;
+        }
+
+        .note-item {
             background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+            transition: box-shadow 0.3s ease;
         }
 
-        .notes-meta {
-            margin-top: 1rem;
+        .note-item:hover {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .note-header {
+            background: #667eea;
+            color: white;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .note-content {
+            padding: 1rem;
+            min-height: 60px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            cursor: text;
+            border: none;
+            outline: none;
+            resize: vertical;
+            width: 100%;
+            font-family: inherit;
+        }
+
+        .note-content:focus {
+            background: #f8f9fb;
+            box-shadow: inset 0 0 0 2px #667eea;
+        }
+
+        .note-meta {
+            padding: 0.5rem 1rem;
             font-size: 0.8rem;
             color: #6c757d;
+            border-top: 1px solid #f1f3f4;
+            background: #fafbfc;
+        }
+
+        .add-note-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 0.75rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            transition: background 0.3s ease;
+            width: 100%;
+        }
+
+        .add-note-btn:hover {
+            background: #5a67d8;
+        }
+
+        .notes-actions {
+            border-top: 1px solid #e9ecef;
+            padding-top: 1rem;
+            margin-top: auto;
         }
 
         .btn {
@@ -140,8 +241,9 @@
             border-radius: 5px;
             cursor: pointer;
             font-size: 0.9rem;
-            margin: 0.5rem 0;
+            margin: 0.25rem 0;
             transition: background 0.3s ease;
+            width: 100%;
         }
 
         .btn:hover {
@@ -256,12 +358,118 @@
             margin-right: 0.5rem;
         }
 
-        .export-import {
-            margin-top: 1rem;
-            padding-top: 1rem;
-            border-top: 1px solid #e9ecef;
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.8);
+            animation: modalFadeIn 0.3s ease;
         }
 
+        .modal.show {
+            display: block;
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 2% auto;
+            padding: 2rem;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .modal-header h2 {
+            color: #2c3e50;
+            margin: 0;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        @keyframes modalFadeIn {
+            from {opacity: 0;}
+            to {opacity: 1;}
+        }
+
+        @keyframes modalSlideIn {
+            from {transform: translateY(-50px); opacity: 0;}
+            to {transform: translateY(0); opacity: 1;}
+        }
+
+        /* Permission Banner */
+        .permission-banner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 1rem;
+            z-index: 1001;
+            text-align: center;
+            transform: translateY(-100%);
+            transition: transform 0.3s ease;
+        }
+
+        .permission-banner.show {
+            transform: translateY(0);
+        }
+
+        .permission-banner .buttons {
+            margin-top: 1rem;
+            gap: 1rem;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .permission-banner button {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 0 0.5rem;
+        }
+
+        .permission-banner button:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        /* Mobile Styles */
         @media (max-width: 1024px) {
             .container {
                 grid-template-columns: 250px 1fr;
@@ -283,20 +491,138 @@
                     "main";
             }
             
+            .burger-menu {
+                display: flex;
+            }
+            
             .nav {
+                position: fixed;
+                top: 80px;
+                left: 0;
+                width: 280px;
+                height: calc(100vh - 80px);
+                z-index: 999;
+                box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            }
+            
+            .header .subtitle {
                 display: none;
+            }
+
+            .modal-content {
+                margin: 5% auto;
+                width: 95%;
+                padding: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main {
+                padding: 1rem;
+            }
+
+            .modal-content {
+                margin: 2% auto;
+                padding: 1rem;
             }
         }
     </style>
 </head>
 <body>
+    <!-- Permission Banner -->
+    <div id="permission-banner" class="permission-banner">
+        <div>
+            <h3>📚 Learning Renaissance Dashboard</h3>
+            <p>This app wants to save your learning notes locally on your device for your convenience. <br>
+            <strong>Important:</strong> Your data will only be stored on this device and may be lost if you clear browser data, use incognito mode, or switch devices.</p>
+            <div class="buttons">
+                <button onclick="acceptLocalStorage()">✅ Allow Local Storage</button>
+                <button onclick="declineLocalStorage()">❌ Use Session Only</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- How-to Modal -->
+    <div id="help-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🎓 How to Use Your Learning Renaissance Dashboard</h2>
+                <span class="close">&times;</span>
+            </div>
+            
+            <h3>📱 Navigation</h3>
+            <div class="info-box">
+                <p><strong>Desktop:</strong> Use the left sidebar to navigate between learning phases</p>
+                <p><strong>Mobile:</strong> Tap the ☰ menu button in the header to open navigation</p>
+                <p><strong>Sections:</strong> Each section builds on the previous ones - start with "Overview" if you're new</p>
+            </div>
+
+            <h3>📝 Taking Notes</h3>
+            <div class="success-box">
+                <p><strong>Phase-Specific Notes:</strong> Notes are automatically organized by the section you're viewing</p>
+                <p><strong>Adding Notes:</strong> Click "Add Note" in the right panel to create a new note for the current section</p>
+                <p><strong>Editing:</strong> Click on any note content to edit it directly - your changes save automatically when you click elsewhere</p>
+                <p><strong>Growing Collection:</strong> As you add more notes, the container scrolls to keep everything accessible</p>
+            </div>
+
+            <h3>💾 Data Storage</h3>
+            <div class="warning-box">
+                <p><strong>Local Storage:</strong> If enabled, your notes stay on this device between sessions</p>
+                <p><strong>Session Only:</strong> Notes are temporarily stored and lost when you close the browser</p>
+                <p><strong>Export/Import:</strong> Always available to backup your notes as files</p>
+                <p><strong>Data Loss Risk:</strong> Browser data clearing, incognito mode, or device changes will remove your notes</p>
+            </div>
+
+            <h3>🎯 Learning Strategy</h3>
+            <div class="highlight-box">
+                <h4>Recommended Learning Path:</h4>
+                <ol>
+                    <li><strong>Start with Overview:</strong> Understand the complete system</li>
+                    <li><strong>Foundation Reset:</strong> Set up your learning environment (Week 1-2)</li>
+                    <li><strong>MAPPER Framework:</strong> Learn the core methodology</li>
+                    <li><strong>Memory Mastery:</strong> Implement retention techniques</li>
+                    <li><strong>Daily Routine:</strong> Establish consistent practices</li>
+                    <li><strong>Troubleshooting:</strong> Reference when you hit challenges</li>
+                </ol>
+            </div>
+
+            <h3>📊 Progress Tracking</h3>
+            <div class="info-box">
+                <p><strong>Checkboxes:</strong> Track completion of setup tasks and daily goals</p>
+                <p><strong>Notes:</strong> Document your experiences, insights, and adaptations</p>
+                <p><strong>Weekly Reviews:</strong> Use the Weekly Rituals section for reflection</p>
+            </div>
+
+            <h3>🔧 Technical Tips</h3>
+            <ul>
+                <li><strong>Bookmark this page</strong> for easy access</li>
+                <li><strong>Export notes regularly</strong> as backup</li>
+                <li><strong>Use full-screen mode</strong> for distraction-free learning</li>
+                <li><strong>Works offline</strong> once loaded (except export/import)</li>
+            </ul>
+
+            <h3>🚀 Getting Started</h3>
+            <div class="success-box">
+                <p><strong>Right Now:</strong> Close this guide and click on "Foundation Reset" to begin your learning journey!</p>
+                <p><strong>Your First Action:</strong> Create a note about what you want to learn and why</p>
+                <p><strong>Remember:</strong> This is your personal learning laboratory - adapt everything to your needs</p>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
         <header class="header">
+            <div class="burger-menu" id="burger-menu">
+                <div class="burger-line"></div>
+                <div class="burger-line"></div>
+                <div class="burger-line"></div>
+            </div>
             <h1>Learning Renaissance Dashboard</h1>
+            <button class="help-btn" onclick="showHelp()">❓ How to Use</button>
             <div class="subtitle">Your Personal Learning System</div>
         </header>
 
-        <nav class="nav">
+        <nav class="nav" id="nav">
             <div class="nav-section">Foundation</div>
             <a href="#" class="nav-item active" data-section="overview">Overview</a>
             <a href="#" class="nav-item" data-section="reset">Foundation Reset</a>
@@ -719,175 +1045,327 @@
         </main>
 
         <aside class="notes">
-            <h3>My Learning Notes</h3>
-            <textarea class="notes-area" id="notes-content" placeholder="Jot down your insights, experiences, and adaptations as you work through each section...
-
-Example notes:
-- Today I tried the Feynman Technique on JavaScript closures
-- Memory palace: Used my workshop layout for circuit concepts
-- Need to review spacing intervals - day 3 review was too easy
-- Connected new Python concept to my PLC programming experience"></textarea>
+            <h3>
+                📝 Notes: <span id="current-section-title">Overview</span>
+            </h3>
+            <button class="add-note-btn" onclick="addNote()">✏️ Add Note for This Section</button>
             
-            <div class="notes-meta">
-                <p><strong>Note:</strong> Your notes are stored temporarily during this session. For permanent storage, copy them to a text file or use the export function below.</p>
+            <div class="notes-container" id="notes-container">
+                <!-- Notes will be dynamically populated here -->
             </div>
 
-            <div class="progress-tracker">
-                <h4>Weekly Goals</h4>
-                <div class="progress-item">
-                    <input type="checkbox" class="progress-checkbox" id="goal1">
-                    <label for="goal1">Complete Phase 1 setup</label>
-                </div>
-                <div class="progress-item">
-                    <input type="checkbox" class="progress-checkbox" id="goal2">
-                    <label for="goal2">Practice MAPPER on chosen topic</label>
-                </div>
-                <div class="progress-item">
-                    <input type="checkbox" class="progress-checkbox" id="goal3">
-                    <label for="goal3">Establish daily routine</label>
-                </div>
-            </div>
-
-            <div class="export-import">
-                <button class="btn btn-secondary" onclick="exportNotes()">Export Notes</button>
-                <button class="btn btn-secondary" onclick="importNotes()">Import Notes</button>
-                <input type="file" id="file-input" style="display: none;" accept=".txt" onchange="loadFile(event)">
+            <div class="notes-actions">
+                <button class="btn btn-secondary" onclick="exportNotes()">📤 Export All Notes</button>
+                <button class="btn btn-secondary" onclick="importNotes()">📥 Import Notes</button>
+                <input type="file" id="file-input" style="display: none;" accept=".json" onchange="loadFile(event)">
             </div>
         </aside>
     </div>
 
     <script>
-        // Store notes and progress in memory for this session
-        let sessionData = {
-            notes: '',
-            checkboxes: {}
+        // Application state
+        let appState = {
+            notes: {},
+            checkboxes: {},
+            currentSection: 'overview',
+            useLocalStorage: false,
+            permissionAsked: false
         };
 
-        // Navigation functionality
-        document.querySelectorAll('.nav-item').forEach(item => {
-            item.addEventListener('click', function(e) {
-                e.preventDefault();
-                
-                // Remove active class from all nav items and sections
-                document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
-                document.querySelectorAll('.content-section').forEach(section => section.classList.remove('active'));
-                
-                // Add active class to clicked nav item
-                this.classList.add('active');
-                
-                // Show corresponding section
-                const sectionId = this.getAttribute('data-section');
-                document.getElementById(sectionId).classList.add('active');
-                
-                // Update notes placeholder based on section
-                updateNotesPlaceholder(sectionId);
-            });
+        // Section titles for display
+        const sectionTitles = {
+            'overview': 'Overview',
+            'reset': 'Foundation Reset',
+            'mapper': 'MAPPER Framework',
+            'memory': 'Memory Mastery',
+            'integration': 'Integration',
+            'troubleshooting': 'Troubleshooting',
+            'routine': 'Daily Routine',
+            'weekly': 'Weekly Rituals',
+            'advantages': 'Your Advantages'
+        };
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            checkStoragePermission();
+            setupEventListeners();
+            loadAppState();
+            updateCurrentSection('overview');
+            renderNotes();
         });
 
-        // Notes functionality
-        const notesArea = document.getElementById('notes-content');
-        
-        // Save notes to session memory
-        notesArea.addEventListener('input', function() {
-            sessionData.notes = this.value;
-        });
-
-        // Checkbox state management
-        document.querySelectorAll('.progress-checkbox').forEach(checkbox => {
-            checkbox.addEventListener('change', function() {
-                sessionData.checkboxes[this.id] = this.checked;
-            });
-        });
-
-        // Update notes placeholder based on current section
-        function updateNotesPlaceholder(sectionId) {
-            const placeholders = {
-                'overview': 'Initial thoughts and goals for your learning journey...',
-                'reset': 'Notes on setting up your learning environment...',
-                'mapper': 'Experiences with the MAPPER framework...',
-                'memory': 'Memory techniques that work best for you...',
-                'integration': 'How you\'re connecting new learning to your professional experience...',
-                'troubleshooting': 'Challenges faced and solutions found...',
-                'routine': 'Your daily routine adaptations and progress...',
-                'weekly': 'Weekly reflection and planning notes...',
-                'advantages': 'Personal advantages you\'ve discovered in your learning journey...'
-            };
-            
-            if (placeholders[sectionId]) {
-                notesArea.placeholder = placeholders[sectionId];
+        // Storage permission management
+        function checkStoragePermission() {
+            const permission = localStorage.getItem('storagePermission');
+            if (permission) {
+                appState.useLocalStorage = permission === 'true';
+                appState.permissionAsked = true;
+                hidePermissionBanner();
+            } else {
+                showPermissionBanner();
             }
         }
 
-        // Export notes to text file
+        function showPermissionBanner() {
+            document.getElementById('permission-banner').classList.add('show');
+        }
+
+        function hidePermissionBanner() {
+            document.getElementById('permission-banner').classList.remove('show');
+        }
+
+        function acceptLocalStorage() {
+            localStorage.setItem('storagePermission', 'true');
+            appState.useLocalStorage = true;
+            appState.permissionAsked = true;
+            hidePermissionBanner();
+            saveAppState();
+        }
+
+        function declineLocalStorage() {
+            localStorage.setItem('storagePermission', 'false');
+            appState.useLocalStorage = false;
+            appState.permissionAsked = true;
+            hidePermissionBanner();
+        }
+
+        // State management
+        function saveAppState() {
+            if (appState.useLocalStorage) {
+                try {
+                    localStorage.setItem('learningDashboardState', JSON.stringify(appState));
+                } catch (e) {
+                    console.warn('Failed to save to localStorage:', e);
+                }
+            }
+        }
+
+        function loadAppState() {
+            if (appState.useLocalStorage) {
+                try {
+                    const saved = localStorage.getItem('learningDashboardState');
+                    if (saved) {
+                        const savedState = JSON.parse(saved);
+                        appState.notes = savedState.notes || {};
+                        appState.checkboxes = savedState.checkboxes || {};
+                        
+                        // Restore checkbox states
+                        Object.keys(appState.checkboxes).forEach(id => {
+                            const checkbox = document.getElementById(id);
+                            if (checkbox) {
+                                checkbox.checked = appState.checkboxes[id];
+                            }
+                        });
+                    }
+                } catch (e) {
+                    console.warn('Failed to load from localStorage:', e);
+                }
+            }
+        }
+
+        // Event listeners setup
+        function setupEventListeners() {
+            // Navigation
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const sectionId = this.getAttribute('data-section');
+                    navigateToSection(sectionId);
+                });
+            });
+
+            // Mobile menu toggle
+            document.getElementById('burger-menu').addEventListener('click', function() {
+                const nav = document.getElementById('nav');
+                nav.classList.toggle('mobile-hidden');
+            });
+
+            // Checkbox tracking
+            document.querySelectorAll('.progress-checkbox').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    appState.checkboxes[this.id] = this.checked;
+                    saveAppState();
+                });
+            });
+
+            // Modal close
+            document.querySelector('.close').addEventListener('click', hideHelp);
+            window.addEventListener('click', function(event) {
+                const modal = document.getElementById('help-modal');
+                if (event.target === modal) {
+                    hideHelp();
+                }
+            });
+        }
+
+        // Navigation
+        function navigateToSection(sectionId) {
+            // Update navigation
+            document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+            document.querySelectorAll('.content-section').forEach(section => section.classList.remove('active'));
+            
+            document.querySelector(`[data-section="${sectionId}"]`).classList.add('active');
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Update current section
+            updateCurrentSection(sectionId);
+            
+            // Hide mobile nav
+            document.getElementById('nav').classList.add('mobile-hidden');
+        }
+
+        function updateCurrentSection(sectionId) {
+            appState.currentSection = sectionId;
+            document.getElementById('current-section-title').textContent = sectionTitles[sectionId] || sectionId;
+            renderNotes();
+        }
+
+        // Notes management
+        function addNote() {
+            const section = appState.currentSection;
+            if (!appState.notes[section]) {
+                appState.notes[section] = [];
+            }
+            
+            const note = {
+                id: Date.now().toString(),
+                content: '',
+                created: new Date().toISOString(),
+                modified: new Date().toISOString()
+            };
+            
+            appState.notes[section].push(note);
+            saveAppState();
+            renderNotes();
+            
+            // Focus on the new note
+            setTimeout(() => {
+                const newNoteElement = document.querySelector(`[data-note-id="${note.id}"] .note-content`);
+                if (newNoteElement) {
+                    newNoteElement.focus();
+                }
+            }, 100);
+        }
+
+        function updateNote(noteId, content) {
+            const section = appState.currentSection;
+            if (appState.notes[section]) {
+                const note = appState.notes[section].find(n => n.id === noteId);
+                if (note) {
+                    note.content = content;
+                    note.modified = new Date().toISOString();
+                    saveAppState();
+                }
+            }
+        }
+
+        function deleteNote(noteId) {
+            const section = appState.currentSection;
+            if (appState.notes[section]) {
+                appState.notes[section] = appState.notes[section].filter(n => n.id !== noteId);
+                saveAppState();
+                renderNotes();
+            }
+        }
+
+        function renderNotes() {
+            const container = document.getElementById('notes-container');
+            const section = appState.currentSection;
+            const notes = appState.notes[section] || [];
+            
+            if (notes.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; color: #6c757d; padding: 2rem; font-style: italic;">
+                        No notes yet for this section.<br>
+                        Click "Add Note" to get started!
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = notes.map(note => `
+                <div class="note-item" data-note-id="${note.id}">
+                    <div class="note-header">
+                        ${sectionTitles[section]} Note
+                        <span onclick="deleteNote('${note.id}')" style="float: right; cursor: pointer; opacity: 0.7;">✖</span>
+                    </div>
+                    <textarea class="note-content" 
+                              onblur="updateNote('${note.id}', this.value)"
+                              placeholder="Click to write your note...">${note.content}</textarea>
+                    <div class="note-meta">
+                        Created: ${new Date(note.created).toLocaleDateString()}
+                        ${note.modified !== note.created ? `• Modified: ${new Date(note.modified).toLocaleDateString()}` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Export/Import functionality
         function exportNotes() {
             const data = {
-                notes: sessionData.notes,
-                checkboxes: sessionData.checkboxes,
-                exportDate: new Date().toISOString()
+                notes: appState.notes,
+                checkboxes: appState.checkboxes,
+                exportDate: new Date().toISOString(),
+                version: '1.0'
             };
             
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'learning-renaissance-notes.json';
+            a.download = `learning-renaissance-notes-${new Date().toISOString().split('T')[0]}.json`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
         }
 
-        // Import notes from file
         function importNotes() {
             document.getElementById('file-input').click();
         }
 
         function loadFile(event) {
             const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    try {
-                        const data = JSON.parse(e.target.result);
-                        
-                        // Restore notes
-                        if (data.notes) {
-                            sessionData.notes = data.notes;
-                            notesArea.value = data.notes;
-                        }
-                        
-                        // Restore checkbox states
-                        if (data.checkboxes) {
-                            sessionData.checkboxes = data.checkboxes;
-                            Object.keys(data.checkboxes).forEach(id => {
-                                const checkbox = document.getElementById(id);
-                                if (checkbox) {
-                                    checkbox.checked = data.checkboxes[id];
-                                }
-                            });
-                        }
-                        
-                        alert('Notes and progress imported successfully!');
-                    } catch (error) {
-                        alert('Error importing file. Please ensure it\'s a valid JSON file.');
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    
+                    if (data.notes) {
+                        appState.notes = { ...appState.notes, ...data.notes };
                     }
-                };
-                reader.readAsText(file);
-            }
+                    
+                    if (data.checkboxes) {
+                        appState.checkboxes = { ...appState.checkboxes, ...data.checkboxes };
+                        Object.keys(data.checkboxes).forEach(id => {
+                            const checkbox = document.getElementById(id);
+                            if (checkbox) {
+                                checkbox.checked = data.checkboxes[id];
+                            }
+                        });
+                    }
+                    
+                    saveAppState();
+                    renderNotes();
+                    alert('✅ Notes imported successfully!');
+                } catch (error) {
+                    alert('❌ Error importing file. Please ensure it\'s a valid JSON file exported from this dashboard.');
+                    console.error('Import error:', error);
+                }
+            };
+            reader.readAsText(file);
         }
 
-        // Auto-scroll to active section
-        function scrollToActiveSection() {
-            const activeSection = document.querySelector('.content-section.active');
-            if (activeSection) {
-                activeSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
+        // Help modal
+        function showHelp() {
+            document.getElementById('help-modal').classList.add('show');
         }
 
-        // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
-            updateNotesPlaceholder('overview');
-        });
+        function hideHelp() {
+            document.getElementById('help-modal').classList.remove('show');
+        }
     </script>
 </body>
 </html>
